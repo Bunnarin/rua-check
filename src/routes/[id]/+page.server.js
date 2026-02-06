@@ -10,29 +10,16 @@ const auth = new google.auth.JWT({
 
 export async function load({ params }) {
   const sheets = google.sheets({ version: 'v4', auth }).spreadsheets;
-  const { data: indices } = await sheets.values.get({
+  const { data: { values } } = await sheets.values.get({
     spreadsheetId: SS_ID,
-    range: 'certificate!A:A',
+    range: 'certificate!A:Z',
   });
 
-  // first we find the index of the row first
-  const rowIndex = indices.values.findIndex(([row]) => row === params.id);
+  const targetRow = values.find(row => row[0].toLowerCase().trim() === params.id.toLowerCase().trim());
 
-  if (rowIndex === -1) {
-    throw error(404, {
-      message: 'Certificate not found. Please check the ID and try again.'
-    });
-  }
+  if (!targetRow) throw error(404, 'Certificate not found');
 
-  const { data } = await sheets.values.batchGet({
-    spreadsheetId: SS_ID,
-    ranges: [
-      `certificate!A1:Z1`,
-      `certificate!A${rowIndex + 1}:Z${rowIndex + 1}`
-    ],
-  });
-  let [{ values: keys }, { values: values }] = data.valueRanges;
-  keys = keys[0].slice(1);
-  values = values[0].slice(1);
-  return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
+  // Map headers to values
+  const keys = values[0].slice(1);
+  return Object.fromEntries(keys.map((k, i) => [k, targetRow[i + 1]]));
 }

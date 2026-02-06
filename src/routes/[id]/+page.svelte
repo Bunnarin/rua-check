@@ -1,16 +1,15 @@
 <script>
-  import { base } from "$app/paths";
   export let data;
 </script>
 
 <svelte:head>
-  <title>Certificate Details | CACU</title>
+  <title>Certificate Details</title>
 </svelte:head>
 
 <div class="container result-card">
   <div class="card-header">
     <h2>Certificate Information</h2>
-    <a href="{base}/" class="back-link">
+    <a href="/" class="back-link">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -40,11 +39,7 @@
                   .replace("image", "")}</td
               >
               <td class="value-cell">
-                {#if key.toLowerCase().includes("image")}
-                  <div class="image-wrapper">
-                    <img src={value} alt={key} />
-                  </div>
-                {:else if typeof value === "string" && value.startsWith("http")}
+                {#if typeof value === "string" && value.startsWith("http")}
                   <a
                     href={value}
                     target="_blank"
@@ -110,7 +105,6 @@
   }
 
   table {
-    width: 100%;
     border-collapse: separate;
     border-spacing: 0;
   }
@@ -125,7 +119,6 @@
   }
 
   .label-cell {
-    width: 35%;
     font-weight: 600;
     color: #555;
     font-size: 0.95rem;
@@ -136,19 +129,6 @@
   .value-cell {
     font-size: 1rem;
     color: #333;
-  }
-
-  .image-wrapper {
-    max-width: 200px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .image-wrapper img {
-    width: 100%;
-    height: auto;
-    display: block;
   }
 
   .external-link {
@@ -181,24 +161,18 @@
     }
 
     .label-cell {
-      width: 100%;
-      display: block;
-      background: none;
-      padding-bottom: 0.25rem;
-      color: #2e7d32;
+      padding-right: 0.5rem;
+      font-size: 0.85rem;
+      width: 50%;
     }
 
     .value-cell {
-      width: 100%;
-      display: block;
-      padding-top: 0.25rem;
-      padding-left: 0;
+      font-size: 0.9rem;
+      padding-left: 0.5rem;
     }
 
     tr {
-      display: flex;
-      flex-direction: column;
-      padding: 0.75rem 0;
+      padding: 0.5rem 0;
     }
   }
 </style>
