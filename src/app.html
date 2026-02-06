@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" href="%sveltekit.assets%/logo.jpg" />
+	<style>
+		body {
+			font-family: 'Segoe UI', Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background: #f4f7f6;
+			color: #333;
+		}
+
+		.header {
+			width: 100%;
+			background: white;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+			margin-bottom: 2rem;
+		}
+
+		.header img {
+			width: 100%;
+			max-width: 1200px;
+			display: block;
+			margin: 0 auto;
+		}
+
+		.container {
+			max-width: 700px;
+			margin: 0 auto 3rem auto;
+			background: white;
+			border-radius: 16px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			padding: 0;
+			overflow: hidden;
+		}
+
+		/* ... existing styles simplified ... */
+	</style>
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<header class="header">
+		<img src="%sveltekit.assets%/header.png" alt="CACU Header" />
+	</header>
+	<main style="display: contents">
+		%sveltekit.body%
+	</main>
+</body>
+
+</html>
