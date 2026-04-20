@@ -1,22 +1,7 @@
 <script>
     import { goto } from "$app/navigation";
-
     let certId = "";
-
-    function verify() {
-        goto(`/${certId.trim()}`);
-    }
-
-    function handleKeydown(event) {
-        if (event.key === "Enter") {
-            verify();
-        }
-    }
 </script>
-
-<svelte:head>
-    <title>Certificate Verification | CACU</title>
-</svelte:head>
 
 <div class="container verification-card">
     <div class="card-content">
@@ -29,11 +14,14 @@
             <input
                 type="text"
                 bind:value={certId}
-                on:keydown={handleKeydown}
+                on:keydown={(e) => {
+                    if (e.key === "Enter")
+                        goto(`/lc-certificate/${certId.trim()}`);
+                }}
                 placeholder="Enter certification number (e.g., EP202602001)"
             />
             <button
-                on:click={verify}
+                on:click={() => goto(`/lc-certificate/${certId.trim()}`)}
                 disabled={!certId.trim()}
                 class="verify-btn"
             >
