@@ -13,7 +13,7 @@ export const load = async ({ params }) => {
     const { data } = await res.json();
     // inject our own
     if (data.scholarshipSourceId)
-        data.scholarship = data.scholarshipSource?.name + data.scholarshipCoverage != 100 ? `(${data.scholarshipCoverage}%)` : '';
+        data.scholarship = data.scholarshipSource?.name + `(${data.scholarshipCoverage}%)`;
     data.phone = data.user?.phone;
     data.email = data.user?.email;
     const fieldsToHide = ['shift', 'createdAt', 'status', 'oldId', 'fyId', 'balance', 'validTil', 'validTilSemester', 'photoURL', 'scholarshipCoverage', 'userId', 'backgroundId', 'scholarshipSourceId'];
