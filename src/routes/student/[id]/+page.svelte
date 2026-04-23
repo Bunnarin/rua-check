@@ -1,7 +1,7 @@
 <script>
     export let data;
     // Filter out fields for the main details section to avoid duplicates
-    const excludeKeys = ["id", "picture", "englishName", "khmerName", "majors"];
+    const excludeKeys = ["id", "photo", "englishName", "khmerName", "majors"];
     const details = Object.entries(data).filter(
         ([key, value]) =>
             value && typeof value !== "object" && !excludeKeys.includes(key),
@@ -19,7 +19,7 @@
                 <div class="avatar-wrapper shadow-soft">
                     {#if data.picture}
                         <img
-                            src={data.picture.url}
+                            src={data.photo}
                             alt={data.englishName}
                             class="avatar"
                         />
@@ -190,7 +190,7 @@
     }
 
     .avatar {
-        width: 100%;
+        width: 69%;
         height: 100%;
         object-fit: cover;
     }
