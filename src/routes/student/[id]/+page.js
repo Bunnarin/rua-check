@@ -16,7 +16,8 @@ export const load = async ({ params }) => {
         data.scholarship = data.scholarshipSource?.name + `(${data.scholarshipCoverage}%)`;
     data.phone = data.user?.phone;
     data.email = data.user?.email;
-    data.photo = 'https://portal.rua.edu.kh' + data.picture.url;
+    if (data.picture?.url)
+        data.photo = 'https://portal.rua.edu.kh' + data.picture.url;
     const fieldsToHide = ['shift', 'createdAt', 'status', 'oldId', 'fyId', 'balance', 'validTil', 'validTilSemester', 'photoURL', 'scholarshipCoverage', 'userId', 'backgroundId', 'scholarshipSourceId'];
     fieldsToHide.forEach(field => delete data[field]);
     return data;

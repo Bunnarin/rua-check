@@ -17,7 +17,7 @@
         <header class="profile-hero shadow-premium">
             <div class="hero-content">
                 <div class="avatar-wrapper shadow-soft">
-                    {#if data.picture}
+                    {#if data.photo}
                         <img
                             src={data.photo}
                             alt={data.englishName}
