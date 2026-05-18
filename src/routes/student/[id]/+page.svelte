@@ -12,6 +12,16 @@
         ([key, value]) =>
             value && typeof value !== "object" && !excludeKeys.includes(key),
     );
+
+    const majorTags = data.enrollments
+        .filter((e) => !e.dropoutDate)
+        .map((e) => {
+            let tag = e.program.khmerName;
+            if (e.graduationDate) tag += "(បានបញ្ចប់ការសិក្សា)";
+            else if (e.year) tag += `(ឆ្នាំទី${e.year})`;
+            tag += ` ជំនាន់ទី ${e.generation}`;
+            return tag;
+        });
 </script>
 
 <div class="school-logo-container" style="text-align: center;">
@@ -39,13 +49,8 @@
                     <span class="tag-label">ID:</span>
                     {data.id}
                 </span>
-                {#each data.enrollments.filter((e) => !e.dropoutDate) as enrollment}
-                    <span class="major-tag"
-                        >{enrollment.program.khmerName}
-                        {enrollment.graduationDate
-                            ? `(បានបញ្ចប់ការសិក្សា)`
-                            : `(ឆ្នាំទី${enrollment.year})`}</span
-                    >
+                {#each majorTags as majorTag}
+                    <span class="major-tag">{majorTag}</span>
                 {/each}
             </div>
         </div>
