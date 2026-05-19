@@ -3,7 +3,7 @@ import { PUBLIC_PORTAL_API_KEY } from "$env/static/public";
 export const load = async ({ params }) => {
     const query = new URLSearchParams({
         filterByTk: params.id,
-        appends: 'enrollments,enrollments.program,picture,scholarshipSource,user'
+        appends: 'enrollments,enrollments.program,picture,scholarshipSource,user,classes'
     });
     const res = await fetch(`https://portal.rua.edu.kh/api/student:get?${query}`, {
         headers: {
@@ -18,6 +18,8 @@ export const load = async ({ params }) => {
     data.email = data.user?.email;
     if (data.picture)
         data.photo = 'https://portal.rua.edu.kh' + data.picture.url;
+    if (data.classes)
+        data.classes = data.classes.map((c) => c.name).join(', ');
     const fieldsToHide = ['shift', 'createdAt', 'status', 'oldId', 'fyId', 'balance', 'validTilSemesterId', 'photoURL', 'scholarshipCoverage', 'userId', 'backgroundId', 'scholarshipSourceId'];
     fieldsToHide.forEach(field => delete data[field]);
     return data;

@@ -19,13 +19,18 @@
             let tag = e.program.khmerName;
             if (e.graduationDate) tag += "(បានបញ្ចប់ការសិក្សា)";
             else if (e.year) tag += `(ឆ្នាំទី${e.year})`;
-            tag += ` ជំនាន់ទី ${e.generation}`;
+            if (e.generation) tag += ` ជំនាន់ទី ${e.generation}`;
             return tag;
         });
 </script>
 
 <div class="school-logo-container" style="text-align: center;">
-    <img src="/logo.png" alt="School Logo" class="school-logo" />
+    <img
+        src="/logo.png"
+        alt="School Logo"
+        class="school-logo"
+        style="width:8rem"
+    />
 </div>
 <!-- Profile Hero Section -->
 <header class="profile-hero shadow-premium">
