@@ -18,9 +18,13 @@ export const load = async ({ params }) => {
     data.email = data.user?.email;
     if (data.picture)
         data.photo = 'https://portal.rua.edu.kh' + data.picture.url;
-    if (data.classes)
-        data.classes = data.classes.map((c) => c.name).join(', ');
-    const fieldsToHide = ['shift', 'createdAt', 'status', 'oldId', 'fyId', 'balance', 'validTilSemesterId', 'photoURL', 'scholarshipCoverage', 'userId', 'backgroundId', 'scholarshipSourceId'];
+    data.classes = data.classes.map((c) => c.name).join(', ');
+    const fieldsToHide = ['highschoolType', 'bacIIYear', 'bacIIGrade', 'noNationalIdYet', 'bacIICertificateID', 'nationalID', 'bacIIGrade'];
+    // bassically hide anything that ends with 'Id'
+    for (const key in data) {
+        if (key.endsWith('Id'))
+            fieldsToHide.push(key);
+    }
     fieldsToHide.forEach(field => delete data[field]);
     return data;
 };
