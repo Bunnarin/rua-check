@@ -1,5 +1,7 @@
 import { PUBLIC_PORTAL_API_KEY } from "$env/static/public";
 
+export const ssr = false;
+
 export const load = async ({ params }) => {
     const query = new URLSearchParams({
         filterByTk: params.id,
