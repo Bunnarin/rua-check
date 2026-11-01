@@ -1,8 +1,9 @@
 <script>
     export let data;
-    const includeKeys = ["classes", "birthday", "orientationGroup"];
+    const excludeKeys = ["id", "englishName", "khmerName"];
     const details = Object.entries(data).filter(
-        ([key, value]) => value && includeKeys.includes(key),
+        ([key, value]) =>
+            value && typeof value !== "object" && !excludeKeys.includes(key),
     );
 
     const majorTags = data.enrollments
