@@ -1,4 +1,4 @@
-import { UMS_API_KEY } from "$env/static/private";
+import { UMS_API_KEY, WORKER_PASS } from "$env/static/private";
 
 export const ssr = true;
 
@@ -14,7 +14,7 @@ export const load = async ({ params }) => {
         headers: {
             "Authorization": `Bearer ${UMS_API_KEY}`,
             // to allow cloudflare worker to bypass the only KH rules on WAF
-            "X-Worker-Allow": "ruaadmin"
+            "X-Worker-Allow": WORKER_PASS
         },
     });
     const { data } = await res.json();
