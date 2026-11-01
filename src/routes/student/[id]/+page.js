@@ -16,7 +16,7 @@ export const load = async ({ params }) => {
     // inject our own
     data.phone = data.user?.phone;
     if (data.picture)
-        data.photo = 'https://rua.popok.uk' + data.picture.url;
+        data.pictureURL = 'https://rua.popok.uk' + data.picture.preview;
     data.classes = data.classes.map((c) => c.name).join(', ');
     const fieldsToHide = ['highschoolType', 'bacIIYear', 'bacIIGrade', 'noNationalIdYet', 'bacIICertificateID', 'nationalID', 'bacIIGrade'];
     // bassically hide anything that ends with 'Id'

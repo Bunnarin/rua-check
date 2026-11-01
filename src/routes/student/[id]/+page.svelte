@@ -3,10 +3,10 @@
     // Filter out fields for the main details section to avoid duplicates
     const excludeKeys = [
         "id",
-        "photo",
+        "pictureURL",
         "englishName",
         "khmerName",
-        "enrollments",
+        "cardPrintedAt",
     ];
     const details = Object.entries(data).filter(
         ([key, value]) =>
@@ -35,15 +35,15 @@
 <!-- Profile Hero Section -->
 <header class="profile-hero shadow-premium">
     <div class="hero-content">
-        <div class="avatar-wrapper shadow-soft">
-            {#if data.photo}
-                <img src={data.photo} alt={data.englishName} class="avatar" />
+        <!-- <div class="avatar-wrapper shadow-soft">
+            {#if data.pictureURL}
+                <img src={data.pictureURL} alt={data.englishName} class="avatar" />
             {:else}
                 <div class="avatar-placeholder">
                     {data.khmerName.charAt(0)}
                 </div>
             {/if}
-        </div>
+        </div> -->
         <div class="student-info">
             <h1 class="student-name">
                 {data.khmerName}
