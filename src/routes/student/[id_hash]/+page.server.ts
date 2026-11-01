@@ -7,7 +7,7 @@ export const load = async ({ params }) => {
         filter: JSON.stringify({
             hashedId: params.id_hash
         }),
-        appends: ['enrollments', 'enrollments.program', 'classes'],
+        appends: ['enrollments', 'classes'],
         fields: ['enrollments', 'classes', 'id', 'khmerName', 'englishName', 'orientationGroup']
     });
     const res = await fetch(`https://rua.popok.uk/api/student:get?${query}`, {
@@ -18,6 +18,7 @@ export const load = async ({ params }) => {
         },
     });
     const { data } = await res.json();
-    data.classes = data.classes.map((c) => c.name).join(', ');
+    data['English Classes'] = data.classes.filter(c => c.programId == 2).map(c => c.name).join(', ')
+    data.classes = data.classes.filter(c => c.programId !== 2).map((c) => c.name).join(', ');
     return data;
 };
