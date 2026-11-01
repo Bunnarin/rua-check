@@ -1,16 +1,8 @@
 <script>
     export let data;
-    // Filter out fields for the main details section to avoid duplicates
-    const excludeKeys = [
-        "id",
-        "pictureURL",
-        "englishName",
-        "khmerName",
-        "cardPrintedAt",
-    ];
+    const includeKeys = ["classes", "birthday", "orientationGroup"];
     const details = Object.entries(data).filter(
-        ([key, value]) =>
-            value && typeof value !== "object" && !excludeKeys.includes(key),
+        ([key, value]) => value && includeKeys.includes(key),
     );
 
     const majorTags = data.enrollments

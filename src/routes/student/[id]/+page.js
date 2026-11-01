@@ -5,7 +5,7 @@ export const ssr = false;
 export const load = async ({ params }) => {
     const query = new URLSearchParams({
         filterByTk: params.id,
-        appends: 'enrollments,enrollments.program,picture,user,classes'
+        appends: ['enrollments', 'enrollments.program', 'classes']
     });
     const res = await fetch(`https://rua.popok.uk/api/student:get?${query}`, {
         headers: {
@@ -13,17 +13,6 @@ export const load = async ({ params }) => {
         },
     });
     const { data } = await res.json();
-    // inject our own
-    data.phone = data.user?.phone;
-    if (data.picture)
-        data.pictureURL = 'https://rua.popok.uk' + data.picture.preview;
     data.classes = data.classes.map((c) => c.name).join(', ');
-    const fieldsToHide = ['highschoolType', 'bacIIYear', 'bacIIGrade', 'noNationalIdYet', 'bacIICertificateID', 'nationalID', 'bacIIGrade'];
-    // bassically hide anything that ends with 'Id'
-    for (const key in data) {
-        if (key.endsWith('Id'))
-            fieldsToHide.push(key);
-    }
-    fieldsToHide.forEach(field => delete data[field]);
     return data;
 };
