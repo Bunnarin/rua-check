@@ -13,7 +13,7 @@
 		{
 			// Create with: wrangler kv namespace create RATE_LIMIT
 			"binding": "RATE_LIMIT",
-			"id": "rua-check-rate-limit"
+			"id": "1104dc15b0094cfa82f8bd3aa0bff20e"
 		}
 	]
 }
