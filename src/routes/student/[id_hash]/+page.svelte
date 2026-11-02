@@ -3,6 +3,7 @@
 
     $: student = data.student;
     $: verified = !data.requiresBirthday;
+    $: locked = data.locked ?? false;
 
     // OTP-style inputs: [D, D, M, M, Y, Y, Y, Y]
     let digits = Array(8).fill("");
@@ -162,7 +163,7 @@
                         </div>
                     {/if}
 
-                    <button class="gate-btn" type="submit" disabled={!canSubmit}>
+                    <button class="gate-btn" type="submit" disabled={!canSubmit || locked}>
                         បញ្ជាក់
                     </button>
                 </form>
