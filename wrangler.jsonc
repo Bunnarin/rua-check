@@ -1,5 +1,5 @@
 {
-	"name": "rua-check",
+	"name": "certificate",
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"compatibility_date": "2025-01-01",
 	"compatibility_flags": [
@@ -8,12 +8,5 @@
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
-	},
-	"kv_namespaces": [
-		{
-			// Create with: wrangler kv namespace create RATE_LIMIT
-			"binding": "RATE_LIMIT",
-			"id": "1104dc15b0094cfa82f8bd3aa0bff20e"
-		}
-	]
+	}
 }
