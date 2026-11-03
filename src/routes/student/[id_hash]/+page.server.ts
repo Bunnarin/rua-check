@@ -1,6 +1,34 @@
-import { UMS_API_KEY, WORKER_PASS } from "$env/static/private";
+import { UMS_API_KEY, WORKER_PASS, NAME_MATCH_THRESHOLD } from "$env/static/private";
 
 export const ssr = true;
+
+const normalize = (s: string) => s.toUpperCase().trim().replace(/\s+/g, " ");
+
+function editDistance(s1: string, s2: string): number {
+    const costs: number[] = [];
+    for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+            if (i === 0) costs[j] = j;
+            else if (j > 0) {
+                let newValue = costs[j - 1];
+                if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+                    newValue = Math.min(newValue, lastValue, costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+            }
+        }
+        if (i > 0) costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+}
+
+function getSimilarity(s1: string, s2: string): number {
+    if (!s1 || !s2) return 0; // Don't match empty names
+    const longer = s1.length > s2.length ? s1 : s2;
+    const shorter = s1.length > s2.length ? s2 : s1;
+    return (longer.length - editDistance(longer, shorter)) / longer.length;
+}
 
 export const load = async ({ params, url }) => {
     const query = new URLSearchParams({
@@ -23,17 +51,21 @@ export const load = async ({ params, url }) => {
         return { requiresBirthday: false, student: data };
     }
 
-    // Numeric ID — expect birthday from query param
-    const input = url.searchParams.get("birthday"); // DD/MM/YYYY
+    // Numeric ID: expect English name from query param
+    const input = url.searchParams.get("englishName");
     if (!input) {
-        return { requiresBirthday: true, student: null, birthdayError: null };
+        return { requiresBirthday: true, student: null, birthdayError: null, enteredName: "" };
     }
 
-    const [dd, mm, yyyy] = input.split("/");
-    const normalized = `${yyyy}-${mm}-${dd}`;
+    const score = getSimilarity(normalize(input), normalize(data.englishName ?? ""));
 
-    if (normalized !== data.birthday) {
-        return { requiresBirthday: true, student: null, birthdayError: "Birthday does not match. Please try again." };
+    if (score < NAME_MATCH_THRESHOLD) {
+        return {
+            requiresBirthday: true,
+            student: null,
+            birthdayError: "Name does not match. Please try again.",
+            enteredName: input,
+        };
     }
 
     const { birthday, ...safeStudent } = data;

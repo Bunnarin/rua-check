@@ -4,41 +4,15 @@
     $: student = data.student;
     $: verified = !data.requiresBirthday;
 
-    // OTP-style inputs: [D, D, M, M, Y, Y, Y, Y]
-    let digits = Array(8).fill("");
-
-    function handleInput(e: Event, i: number) {
-        const el = e.target as HTMLInputElement;
-        const val = el.value.replace(/\D/g, "").slice(-1);
-        digits[i] = val;
-        digits = [...digits];
-        if (val && i < 7) {
-            (document.getElementById(`dob-${i + 1}`) as HTMLInputElement)?.focus();
-        }
-    }
-
-    function handleKeydown(e: KeyboardEvent, i: number) {
-        if (e.key === "Backspace" && !digits[i] && i > 0) {
-            (document.getElementById(`dob-${i - 1}`) as HTMLInputElement)?.focus();
-        }
-    }
-
-    function handlePaste(e: ClipboardEvent) {
-        const text = e.clipboardData?.getData("text").replace(/\D/g, "") ?? "";
-        if (text.length === 8) {
-            digits = text.split("");
-            (document.getElementById("dob-7") as HTMLInputElement)?.focus();
-            e.preventDefault();
-        }
-    }
-
-    $: birthdayValue = `${digits.slice(0, 2).join("")}/${digits.slice(2, 4).join("")}/${digits.slice(4, 8).join("")}`;
-    $: canSubmit = digits.every(d => d !== "");
+    // Name gate input
+    let nameInput = data.enteredName ?? "";
+    $: canSubmit = nameInput.trim().length > 0;
 
     // --- Student display logic (same as before) ---
     const excludeKeys = ["id", "englishName", "khmerName"];
     $: details = Object.entries(student ?? {}).filter(
-        ([key, value]) => value && typeof value !== "object" && !excludeKeys.includes(key)
+        ([key, value]) =>
+            value && typeof value !== "object" && !excludeKeys.includes(key),
     );
 
     const programs = [
@@ -64,10 +38,16 @@
         { khmerName: "សេដ្ឋកិច្ច និងគ្រប់គ្រង", id: 27 },
         { khmerName: "កសិអេកូឡូស៊ី និងប្រព័ន្ឋស្បៀងអារហារ", id: 28 },
         { khmerName: "សេដ្ឋកិច្ច និងគ្រប់គ្រងការអភិវឌ្ឍន៍", id: 29 },
-        { khmerName: "ការគ្រប់គ្រងចម្រុះសម្រាប់ការអភិវឌ្ឍកសិកម្មនិងជនបទ", id: 30 },
+        {
+            khmerName: "ការគ្រប់គ្រងចម្រុះសម្រាប់ការអភិវឌ្ឍកសិកម្មនិងជនបទ",
+            id: 30,
+        },
         { khmerName: "ការគ្រប់គ្រងធនធានធម្មជាតិ​", id: 31 },
         { khmerName: "ការផ្សព្វផ្សាយកសិកម្ម (បរិញ្ញាបត្រជាន់ខ្ពស់)", id: 32 },
-        { khmerName: "ការប្រែប្រួលអាកាសធាតុ  និងការអភិវឌ្ឍន៍ប្រកបដោយចីរភាព", id: 34 },
+        {
+            khmerName: "ការប្រែប្រួលអាកាសធាតុ  និងការអភិវឌ្ឍន៍ប្រកបដោយចីរភាព",
+            id: 34,
+        },
         { khmerName: "សេដ្ឋកិច្ច និងគ្រប់គ្រងការអភិវឌ្ឍន៍ (បណ្ឌិត)", id: 35 },
         { khmerName: "ផែនការអភិវឌ្ឍន៍តំបន់ និងទីក្រុង", id: 36 },
         { khmerName: "វិស្វកម្មប្រព័ន្ធជីវកសិកម្ម (ជាន់ខ្ពស់)", id: 37 },
@@ -81,7 +61,8 @@
     $: majorTags = (student?.enrollments ?? [])
         .filter((e: any) => !e.dropoutDate)
         .map((e: any) => {
-            let tag = programs.find((p) => p.id == e.programId)?.khmerName ?? "";
+            let tag =
+                programs.find((p) => p.id == e.programId)?.khmerName ?? "";
             if (e.graduationDate) tag += "(បានបញ្ចប់ការសិក្សា)";
             else if (e.year) tag += ` (ឆ្នាំ${e.year})`;
             if (e.generation) tag += ` ជំនាន់${e.generation}`;
@@ -95,65 +76,24 @@
     </div>
 
     {#if !verified}
-        <!-- Birthday Gate -->
+        <!-- Name Gate -->
         <div class="gate-wrapper">
             <div class="gate-card shadow-premium">
                 <div class="gate-icon">🔐</div>
-                <h2 class="gate-title">សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត</h2>
-                <p class="gate-subtitle">ថ្ងៃ &nbsp;/&nbsp; ខែ &nbsp;/&nbsp; ឆ្នាំ</p>
+                <h2 class="gate-title">សូមបញ្ចូលឈ្មោះជាអក្សរឡាតាំង</h2>
+                <p class="gate-subtitle">Enter your English name</p>
 
                 <form method="GET">
-                    <input type="hidden" name="birthday" value={birthdayValue} />
-
-                    <div class="otp-row">
-                        <!-- DD -->
-                        {#each [0, 1] as i}
-                            <input
-                                id="dob-{i}"
-                                class="otp-box"
-                                type="text"
-                                inputmode="numeric"
-                                maxlength="1"
-                                value={digits[i]}
-                                on:input={(e) => handleInput(e, i)}
-                                on:keydown={(e) => handleKeydown(e, i)}
-                                on:paste={handlePaste}
-                                autocomplete="off"
-                            />
-                        {/each}
-                        <span class="otp-sep">/</span>
-                        <!-- MM -->
-                        {#each [2, 3] as i}
-                            <input
-                                id="dob-{i}"
-                                class="otp-box"
-                                type="text"
-                                inputmode="numeric"
-                                maxlength="1"
-                                value={digits[i]}
-                                on:input={(e) => handleInput(e, i)}
-                                on:keydown={(e) => handleKeydown(e, i)}
-                                on:paste={handlePaste}
-                                autocomplete="off"
-                            />
-                        {/each}
-                        <span class="otp-sep">/</span>
-                        <!-- YYYY -->
-                        {#each [4, 5, 6, 7] as i}
-                            <input
-                                id="dob-{i}"
-                                class="otp-box"
-                                type="text"
-                                inputmode="numeric"
-                                maxlength="1"
-                                value={digits[i]}
-                                on:input={(e) => handleInput(e, i)}
-                                on:keydown={(e) => handleKeydown(e, i)}
-                                on:paste={handlePaste}
-                                autocomplete="off"
-                            />
-                        {/each}
-                    </div>
+                    <input
+                        class="name-input"
+                        type="text"
+                        name="englishName"
+                        bind:value={nameInput}
+                        placeholder="e.g. SOK SAMNANG"
+                        autocomplete="off"
+                        autocapitalize="characters"
+                        spellcheck="false"
+                    />
 
                     {#if data.birthdayError}
                         <div class="gate-error">
@@ -162,7 +102,11 @@
                         </div>
                     {/if}
 
-                    <button class="gate-btn" type="submit" disabled={!canSubmit}>
+                    <button
+                        class="gate-btn"
+                        type="submit"
+                        disabled={!canSubmit}
+                    >
                         បញ្ជាក់
                     </button>
                 </form>
@@ -196,7 +140,9 @@
             <div class="info-grid">
                 {#each details as [key, value]}
                     <div class="info-item">
-                        <label class="info-label">{key.replace(/([A-Z])/g, " $1")}</label>
+                        <label class="info-label"
+                            >{key.replace(/([A-Z])/g, " $1")}</label
+                        >
                         <div class="info-value">{value}</div>
                     </div>
                 {/each}
@@ -206,7 +152,9 @@
 </div>
 
 <style>
-    :global(*) { box-sizing: border-box; }
+    :global(*) {
+        box-sizing: border-box;
+    }
 
     :global(body) {
         margin: 0;
@@ -227,7 +175,9 @@
         text-align: center;
         margin-bottom: 1.25rem;
     }
-    .school-logo { width: 5rem; }
+    .school-logo {
+        width: 5rem;
+    }
 
     /* ── Birthday Gate ── */
     .gate-wrapper {
@@ -264,50 +214,15 @@
         color: #94a3b8;
         letter-spacing: 0.12em;
     }
-
-    /* OTP row — fluid, never overflows */
-    .otp-row {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: clamp(0.2rem, 1.5vw, 0.5rem);
-        margin-bottom: 1.25rem;
-        /* prevent clipping on small screens */
-        padding: 0 0.25rem;
-        overflow: visible;
-    }
-
-    .otp-box {
-        /* fluid width: grows with viewport, min 2rem, max 3rem */
-        width: clamp(2rem, 9vw, 3rem);
-        height: clamp(2.5rem, 11vw, 3.5rem);
-        border: 2px solid #e2e8f0;
-        border-radius: 0.75rem;
-        font-size: clamp(1.1rem, 4.5vw, 1.5rem);
-        font-weight: 700;
+    .name-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
         text-align: center;
-        color: #0f172a;
-        background: #f8fafc;
-        outline: none;
-        transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-        /* prevent browser from adding padding that shrinks text area */
-        padding: 0;
-    }
-
-    .otp-box:focus {
-        border-color: #059669;
-        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18);
-        background: white;
-    }
-
-    .otp-sep {
-        font-size: clamp(1rem, 3.5vw, 1.5rem);
-        font-weight: 300;
-        color: #cbd5e1;
-        flex-shrink: 0;
-        line-height: 1;
-        margin: 0;
-        padding-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: 2px solid #d0d5dd;
+        border-radius: 10px;
     }
 
     .gate-error {
@@ -336,7 +251,9 @@
         cursor: pointer;
         font-family: inherit;
         letter-spacing: 0.03em;
-        transition: opacity 0.15s, transform 0.1s;
+        transition:
+            opacity 0.15s,
+            transform 0.1s;
         box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
     }
 
@@ -391,7 +308,8 @@
         gap: 0.5rem;
     }
 
-    .id-tag, .major-tag {
+    .id-tag,
+    .major-tag {
         display: inline-flex;
         align-items: center;
         gap: 0.3rem;
@@ -468,7 +386,11 @@
     }
 
     @media (max-width: 400px) {
-        .info-grid { grid-template-columns: 1fr; }
-        .student-name { font-size: 1.3rem; }
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        .student-name {
+            font-size: 1.3rem;
+        }
     }
 </style>
